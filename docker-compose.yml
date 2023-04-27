@@ -6,7 +6,7 @@ services:
       - "3000:3000"
     volumes:
       - ./:/usr/src/app
-      # - /usr/src/app/node_modules
+    command: bash -c "npm config set fund false && npm install && npm run dev"
     environment:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
