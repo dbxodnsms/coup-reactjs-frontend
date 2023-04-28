@@ -4,6 +4,7 @@ services:
     build: .
     volumes:
       - ./:/usr/src/app
+    command: "npm install"
     environment:
       - NODE_ENV=development
   execapp:
