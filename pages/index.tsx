@@ -3,6 +3,7 @@ import { NextPage } from "next";
 import Head from "next/head";
 import styles from "/styles/Home.module.css";
 import { enqueueSnackbar } from "notistack";
+import Button from '@mui/material/Button';
 
 import IPost from "@/component/templetes/sample/Post";
 import Header from "@/component/templetes/layout/Header";
@@ -17,6 +18,9 @@ const Home: NextPage = () => {
         </Head>
         <main>
           <Header />
+          <Button variant="contained" onClick={() => enqueueSnackbar("I love hooks!")}>
+            Show snackbar
+          </Button>
           <button onClick={() => enqueueSnackbar("That was easy!")}>
             Show snackbar
           </button>
