@@ -12,11 +12,21 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { useAppDispatch, useAppSelector } from "@/redux";
+import { User } from "@/models/User";
+import { Dialog, styled } from "@mui/material";
+import { closeDialog, openDialog } from "@/redux/slices/globalSlice";
+import GoogleLoginButton from "../login/google";
 
 const pages = ["Project", "Issue", "Board"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
+
+const LoginDialog = styled(Dialog)(({ theme }) => ({
+  "& .MuiDialog-paper": {
+    padding: theme.spacing(2),
+  },
+}));
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -26,6 +36,11 @@ function ResponsiveAppBar() {
     null
   );
   const router = useRouter();
+  const user = useAppSelector<User>((state) => state.user);
+  const dialogOpen = useAppSelector<boolean>(
+    (state) => state.global.dialogOpen
+  );
+  const dispatch = useAppDispatch();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -35,7 +50,6 @@ function ResponsiveAppBar() {
   };
 
   const openPage = (page: string) => {
-    console.log(page);
     router.push(`/${page.toLowerCase()}`);
     handleCloseNavMenu();
   };
@@ -46,6 +60,19 @@ function ResponsiveAppBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleDialogOpen = () => {
+    dispatch(openDialog());
+  };
+
+  const handleDialogClose = () => {
+    dispatch(closeDialog());
+  };
+
+  const openSetting = (setting: string) => {
+    router.push(`/settings/${setting.toLowerCase()}`);
+    handleCloseUserMenu();
   };
 
   return (
@@ -139,11 +166,33 @@ function ResponsiveAppBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
+            {!user.id && (
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                onClick={handleDialogOpen}
+              >
+                Login
+              </Typography>
+            )}
+            <LoginDialog open={Boolean(dialogOpen)} onClose={handleDialogClose}>
+              <Typography variant="h6" noWrap component="a">
+                <GoogleLoginButton />
+              </Typography>
+            </LoginDialog>
+            {!user.id && (
+              <Typography variant="h6" noWrap component="a" href="/signup">
+                Signup
+              </Typography>
+            )}
+            {user.id && (
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt={user.name} src={user.picture} />
+                </IconButton>
+              </Tooltip>
+            )}
             <Menu
               sx={{ mt: "45px" }}
               id="menu-appbar"
@@ -161,7 +210,7 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={() => openSetting(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
