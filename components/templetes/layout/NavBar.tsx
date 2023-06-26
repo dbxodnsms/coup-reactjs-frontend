@@ -15,9 +15,11 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { useRouter } from "next/router";
 import { useAppDispatch, useAppSelector } from "@/redux";
 import { User } from "@/models/User";
-import { Dialog, styled } from "@mui/material";
+import { Dialog, styled, useTheme } from "@mui/material";
 import { closeDialog, openDialog } from "@/redux/slices/globalSlice";
 import GoogleLoginButton from "../login/google";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 
 const pages = ["Project", "Issue", "Board"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -28,7 +30,7 @@ const LoginDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar(props) {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -40,6 +42,8 @@ function ResponsiveAppBar() {
   const dialogOpen = useAppSelector<boolean>(
     (state) => state.global.dialogOpen
   );
+  const theme = useTheme();
+  const colorMode = props.colorMode;
   const dispatch = useAppDispatch();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -95,9 +99,8 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            CO-UP
+            Co-Up
           </Typography>
-
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -151,7 +154,7 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            CO-UP sm
+            Co-Up
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
@@ -164,7 +167,17 @@ function ResponsiveAppBar() {
               </Button>
             ))}
           </Box>
-
+          <IconButton
+            sx={{ ml: 1 }}
+            onClick={colorMode.toggleColorMode}
+            color="inherit"
+          >
+            {theme.palette.mode === "dark" ? (
+              <Brightness7Icon />
+            ) : (
+              <Brightness4Icon />
+            )}
+          </IconButton>
           <Box sx={{ flexGrow: 0 }}>
             {!user.id && (
               <Typography
