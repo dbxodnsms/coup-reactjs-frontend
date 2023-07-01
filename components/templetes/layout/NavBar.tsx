@@ -20,6 +20,7 @@ import { closeDialog, openDialog } from "@/redux/slices/globalSlice";
 import GoogleLoginButton from "../login/google";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import Image from "next/image";
 
 const pages = ["Project", "Issue", "Board"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -27,6 +28,18 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 const LoginDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialog-paper": {
     padding: theme.spacing(2),
+    minHeight: "300px",
+    minWidth: "230px",
+  },
+}));
+
+const CustomAppBar = styled(AppBar)(({ theme }) => ({
+  backgroundColor: "transparent",
+  color: theme.palette.text.primary,
+  height: "56px",
+  "& .MuiToolbar-root": {
+    height: "56px",
+    minHeight: "56px",
   },
 }));
 
@@ -80,10 +93,18 @@ function ResponsiveAppBar(props) {
   };
 
   return (
-    <AppBar position="static">
+    <CustomAppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          {/* <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
+          <Box sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}>
+            <Image
+              src="/images/logo.svg"
+              width={50}
+              height={50}
+              alt="Picture of the author"
+            />
+          </Box>
           <Typography
             variant="h6"
             noWrap
@@ -92,7 +113,6 @@ function ResponsiveAppBar(props) {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
@@ -137,7 +157,15 @@ function ResponsiveAppBar(props) {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
+          <Box sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}>
+            <Image
+              src="/images/logo.svg"
+              width={50}
+              height={50}
+              alt="Picture of the author"
+            />
+          </Box>
           <Typography
             variant="h5"
             noWrap
@@ -147,7 +175,6 @@ function ResponsiveAppBar(props) {
               mr: 2,
               display: { xs: "flex", md: "none" },
               flexGrow: 1,
-              fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
@@ -161,7 +188,11 @@ function ResponsiveAppBar(props) {
               <Button
                 key={page}
                 onClick={() => openPage(page)}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{
+                  my: 2,
+                  color: theme.palette.text.primary,
+                  display: "block",
+                }}
               >
                 {page}
               </Button>
@@ -181,7 +212,7 @@ function ResponsiveAppBar(props) {
           <Box sx={{ flexGrow: 0 }}>
             {!user.id && (
               <Typography
-                variant="h6"
+                sx={{ ml: 1, cursor: "pointer" }}
                 noWrap
                 component="a"
                 onClick={handleDialogOpen}
@@ -190,13 +221,15 @@ function ResponsiveAppBar(props) {
               </Typography>
             )}
             <LoginDialog open={Boolean(dialogOpen)} onClose={handleDialogClose}>
-              <Typography variant="h6" noWrap component="a">
-                <GoogleLoginButton />
-              </Typography>
+              <GoogleLoginButton />
             </LoginDialog>
             {!user.id && (
-              <Typography variant="h6" noWrap component="a" href="/signup">
-                Signup
+              <Typography
+                sx={{ ml: 1, cursor: "pointer" }}
+                noWrap
+                component="a"
+              >
+                / Signup
               </Typography>
             )}
             {user.id && (
@@ -231,7 +264,7 @@ function ResponsiveAppBar(props) {
           </Box>
         </Toolbar>
       </Container>
-    </AppBar>
+    </CustomAppBar>
   );
 }
 export default ResponsiveAppBar;
